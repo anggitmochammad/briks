@@ -99,4 +99,16 @@ class BeritaAcaraController extends Controller
         $data['berita'] = maintenance::findOrFail($id);
         return view('BeritaAcara.updatespec', $data);
     }
+    public function updateSpecSave(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            berita_acara::find($request->id_berita)->update(["spesifikasi" => $request->spesifikasi]);
+            DB::commit();
+            return redirect()->back()->with('success' , "Berhasil update spesifikasi");
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return redirect()->back()->with('danger' , "Gagal, Terjadi kesalahan");
+        }
+    }
 }

@@ -63,6 +63,7 @@ Route::group(['middleware' => 'userAuth'] , function () {
         Route::post('ce/approve/b_acara', 'BeritaAcaraController@CeApprove');
         Route::post('ce/b_acara/reject', 'BeritaAcaraController@reject');
         Route::get('ce/b_acara/update_spec/{id}', 'BeritaAcaraController@updateSpec');
+        Route::post('ce/b_acara/update_spec', 'BeritaAcaraController@updateSpecSave');
     });
     // Role Gabungan Manager , Supervisor , CE
     Route::middleware([RoleManSup::class])->group(function () {

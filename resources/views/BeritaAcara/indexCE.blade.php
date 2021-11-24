@@ -60,8 +60,8 @@
                                     <a href="{{ url('ce/b_acara/'.$item->id) }}" class="btn btn-primary btn-sm">Detail</a>
                                     <a href="{{ url('ce/b_acara/create/'.$item->id) }}" class="btn btn-info">Lihat Berita Acara</a>
                                     @if (isset($item->ToBeritaAcara) == true)
-                                        @if($item->ToBeritaAcara->status_berita_acara == 2)
-                                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#ModalUpdateSpec">Update Spesifikasi</button>
+                                        @if($item->ToBeritaAcara->status_berita_acara == 2 && $item->ToBeritaAcara->spesifikasi == NULL)
+                                        <button type="button" class="btn btn-secondary" onclick="ShowModal({{ $item->ToBeritaAcara->id }})">Update Spesifikasi</button>
                                         @endif
                                     @endif
                                 </td>
@@ -79,41 +79,25 @@
                           </button>
                         </div>
                         <div class="modal-body">
-                            <div class="form-group row">
-                                <label class="col-lg-2">Spesifikasi</label>
-                                <div data-repeater-list="" class="col-lg-10" id="items_material">
-                                    <div data-repeater-item="" class="form-group row align-items-center count-class" id="del-1">
-                                        <div class="col-md-7 col-lg-7">
-                                            <label for="inputEmail4">Nama Material</label>
-                                            <input type="text" class="form-control" name="nama_material[]" @error('nama_material[]')
-                                                style="border: 1px solid red;"
-                                            @enderror>
-                                        </div>
-                                        <div class="col-md-3 col-lg-3">
-                                            <label for="inputEmail4">Jumlah Material</label>
-                                            <input type="number" class="form-control" name="jumlah_material[]" @error('nama_material[]')
-                                                style="border: 1px solid red;"
-                                            @enderror>
-                                        </div>
-                                        <div class="col-md-2 col-lg-2">
-                                            <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-deleted" data-count="1">
-                                            <i class="fas fa-minus"></i>Delete</a>
+                            <form action="{{ url('ce/b_acara/update_spec') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="id_berita" id="id_main">
+                                    <div class="form-group row">
+                                        <label class="col-lg-2">Spesifikasi</label>
+                                        <div class="col-lg-10" id="items_material">
+                                            <div data-repeater-item="" class="form-group row" id="del-1">
+                                                <div class="col-md-6 col-lg-12">
+                                                    <textarea class="form-control" name="spesifikasi" id="" cols="100" rows="10"></textarea>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-lg-2 col-form-label text-right"></label>
-                                <div class="col-lg-4">
-                                    <a href="javascript:;" data-repeater-create="" class="btn btn-sm font-weight-bolder btn-light-primary" id="btn_add">
-                                    <i class="fas fa-plus"></i>Add</a>
+                                <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
+                            </form>
                       </div>
                     </div>
                 </div>
@@ -129,44 +113,10 @@
             "iDisplayLength": 25
         });
 
-        $('#btn_add').click(function () {
-            let count = $('.count-class').length+1;
-            let html = $(`<div data-repeater-item="" class="form-group row align-items-center count-class" id="del-${count}">
-                                <div class="col-md-7">
-                                    <label for="inputEmail4">Nama Material</label>
-                                    <input type="text" class="form-control" name="nama_material[]">
-                                </div>
-                                <div class="col-md-3">
-                                    <label for="inputEmail4">Jumlah Material</label>
-                                    <input type="number" class="form-control" name="jumlah_material[]">
-                                </div>
-                                <div class="col-md-2">
-                                    <a href="javascript:;" data-repeater-delete="" class="btn btn-sm font-weight-bolder btn-light-danger btn-deleted" data-count="${count}">
-                                    <i class="fas fa-minus"></i>Delete</a>
-                                </div>
-                            </div>`).hide().fadeIn(400);
-            $('#items_material').append(html);
-        });
-        $('#items_material').on('click' , '.btn-deleted' , function () {
-            let id = $(this).attr("data-count");
-            $('#del-'+id).fadeOut(400 , function () {
-                $(this).remove();
-            });
-        });
-
-        function deleted(id) {
-            Swal.fire({
-                title: 'Apakah anda yakin ingin Menghapus?',
-                showCancelButton: true,
-                confirmButtonText: 'Hapus',
-                // denyButtonText: `Don't save`,
-                }).then((result) => {
-                if (result.isConfirmed) {
-                    $('#form-'+id).submit();
-                } else if (result.isDenied) {
-                    Swal.fire('Changes are not saved', '', 'info')
-                }
-            });
+        function ShowModal(data) {
+            let id = data;
+            $("#id_main").val(id);
+            $("#ModalUpdateSpec").modal('show');
         }
     </script>
 @endpush

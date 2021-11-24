@@ -16,7 +16,7 @@ class MaintenanceController extends Controller
     }
     public function create(Request $request)
     {
-        $data['peralatan'] = peralatan::all();
+        $data['peralatan'] = peralatan::where('status',0)->get();
         return view('maintenance.create' , $data);
     }
     public function store(Request $request)
